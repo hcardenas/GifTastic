@@ -1,17 +1,28 @@
 console.log("im rdy");
 
+
+// initial button array
 var sports_arr = ["crossfit", "speedwalking", "soccer", "basketball", "softball", "baseball", "pool", "poker", 
 	"running", "jogging", "skating", "rollerskating", "swiming", "bowling", "waterski"];
 
+
+// keep track of the images on the screen in order 
+// to add objects and modify screen
 var images_arr = [];
 
+// ****************************
+// creates buttons on screen after load with the initial array
+// ****************************
 $(document).ready( function() {
 	for (var i = 0; i < sports_arr.length; i++) {
 		create_button( sports_arr[i]);
 	}
-
 });
 
+// ****************************
+// when a button is clicked it populates div
+// with the images requested
+// ****************************
 $("#button_div").on("click", ".button_style", function() {
 
 	$("#images_div").empty();
@@ -30,8 +41,12 @@ $("#button_div").on("click", ".button_style", function() {
     });
 });
 
+
+// ****************************
+// when an image is clicled it changes its src
+// to animate the gif or to stop the gif
+// ****************************
 $("#images_div").on("click", ".img", function(){
-	console.log(this);
 	console.log("i was clicked: " + this.alt);
 	var index = parseInt(this.alt)
 	if (images_arr[index].flag) 
@@ -44,7 +59,12 @@ $("#images_div").on("click", ".img", function(){
 
 });
 
-
+// ****************************
+// creates an object and then adds it to the image
+// array in order to keep track of the images on screen
+// then it populates the screen with images divs with its
+// respective image and rating
+// ****************************
 function display_images(json_response) {
 	console.log(json_response);
 	var gif_url;
@@ -88,35 +108,49 @@ function display_images(json_response) {
 		
 }
 
-function valid_req (req) {
-	
-	var queryURL = "https://api.giphy.com/v1/gifs/search?q= " + req + "&api_key=dc6zaTOxFJmzC&limit=10";
-
-	$.ajax({
-    	url: queryURL,
-    	method: 'GET'
-    }).done(function(response) {
-    	console.log("function returned: " + response.meta.status === 200);
-    	return (response.meta.status === 200) 
-
-    });
-}
-
+// ****************************
+// creates a button and adds to the top 
+// ****************************
 function create_button (button_name) {
 	var new_button = $('<button type="button" class="btn btn-success btn-md button_style" value=' + button_name + '>').text(button_name.replace(/[+]+/g, " "));
 	$("#button_div").append(new_button);
 }
 
+// ****************************
+// grabs input from text form
+// removes trailing white space and 
+// modifies teh string to send the requests
+// then checks if requests is good or not
+// ****************************
 function add_button_from_input() {
 	console.log("checking if button already exits");
 	var input_from_user = $.trim($("#input_div #add_a_button").val() );
 	input_from_user = input_from_user.replace(/[ ]+/g, "+").toLowerCase();
 
-	if (sports_arr.indexOf(input_from_user) === -1 && valid_req(input_from_user) ) {
-		sports_arr.push(input_from_user);
-		create_button(input_from_user);
-		console.log(input_from_user + " added to array and screen");
-	} else {
-		console.log("it Already exits in the array or not valid input");
-	}
+
+	var queryURL = "https://api.giphy.com/v1/gifs/search?q= " + input_from_user + "&api_key=dc6zaTOxFJmzC&limit=10";
+
+	$.ajax({
+    	url: queryURL,
+    	method: 'GET'
+    }).done(function(response) {
+    	console.log(response);
+
+    	if (response.meta.status !== 200) {	
+			alert ("not valid input, with status: " + response.meta.msg);
+		} else if (response.data.length === 0) {
+			alert ("No match found");
+
+		}else if (sports_arr.indexOf(input_from_user) !== -1 ){
+			alert ("it Already exits in the array or");
+		} else  {
+			sports_arr.push(input_from_user);
+			create_button(input_from_user);
+			console.log(input_from_user + " added to array and screen");
+		} 
+ 
+
+    });
+
+	
 }
