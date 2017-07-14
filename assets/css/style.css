@@ -2,12 +2,19 @@ body {
 	background-image: url("../images/bg2.png");
 	color: white;
 }
+p {
+	color: white;
+}
 
 .button_style {
 	margin: 1px 1px;
 	position: relative;
 }
 
+.thumbnail {
+	background: black;
+	color: white;
+}
 
 hr {
     color:white;
