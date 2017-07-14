@@ -3,6 +3,8 @@
 var sports_arr = ["crossfit", "speedwalking", "soccer", "basketball", "softball", "baseball", "pool", "poker", 
 	"running", "jogging", "skating", "rollerskating", "swiming", "bowling", "waterski"];
 
+var sports_arr_len = sports_arr.length;
+
 
 // keep track of the images on the screen in order 
 // to add objects and modify screen
@@ -139,6 +141,11 @@ function create_button (button_name) {
 	var new_button = $('<button type="button" class="btn btn-primary btn-md button_style"' + 
 					   'value=' + button_name + '>').text(button_name.replace(/[+]+/g, " "));
 	$("#button_div").append(new_button);
+
+	if (sports_arr_len !== sports_arr.length) {
+		
+		$(new_button).effect("pulsate", {times:1}, 1000);
+	}
 }
 
 // ****************************
