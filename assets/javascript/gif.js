@@ -47,10 +47,10 @@ $("#button_div").on("click", ".button_style", function() {
 // keeps track of the submit button 
 // ****************************
 $("#submit-btn").on("click", function(event) {
-	event.preventDefault(); 		// this function is supposed to prevent the reload of the page
-									// it works on click but not when u hit enter so i used on the form
-									// onkeypress="return event.keyCode != 13"
-
+	// this function is supposed to prevent the reload of the page
+	// it works on click but not when u hit enter so i used on the form
+	// onkeypress="return event.keyCode != 13"
+	event.preventDefault(); 		
 	add_button_from_input();
 
 });
@@ -108,6 +108,7 @@ function display_images(json_response) {
 		image_obj = {};
 	}
 
+	/******
 	/* im aware that we can do the next loop in same loop above but in order to be more redable 
 	   i decided to break it into 2 */
 
@@ -144,7 +145,7 @@ function create_button (button_name) {
 
 	if (sports_arr_len !== sports_arr.length) {
 		
-		$(new_button).effect("pulsate", {times:1}, 1000);
+		$(new_button).effect("pulsate", {times:2}, 2000);
 	}
 }
 
