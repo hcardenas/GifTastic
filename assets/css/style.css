@@ -1,13 +1,18 @@
 body {
-	background-image: url("../images/bg1.png");
+	background-image: url("../images/bg2.png");
+	color: white;
 }
 
 .button_style {
 	margin: 1px 1px;
 }
 
+
 hr {
-    border: 0;
-    height: 1px;
-    background-image: linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0));
+    color:white;
+}
+
+
+.image_class {
+	margin: 3px 3px;
 }

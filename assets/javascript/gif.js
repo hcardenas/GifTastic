@@ -117,9 +117,9 @@ function display_images(json_response) {
 	// uses the array created above and makes the images divs with its respective rating
 	for (var i = 0; i < images_arr.length; i++) {
 		
-		outter_div = $("<div class='image_class' style='float:left;' >  " );
-		rating_div = $("<p>").text("Rating: " + images_arr[i].rating);
-		image_string = '<img class="img-thumbnail img" src=' + images_arr[i].still_img + 
+		outter_div = $("<div class='image_class thumbnail' style='float:left;' >  " );
+		rating_div = $("<div class='caption'>").html("<p>Rating: " + images_arr[i].rating + "</p>");
+		image_string = '<img class=" img" src=' + images_arr[i].still_img + 
 					   ' style="width:' + images_arr[i].width + 'px;' +
 					   'height:' + images_arr[i].height + 'px;" >';
 		image_div = $(image_string).attr("index-number" , i);
@@ -136,7 +136,7 @@ function display_images(json_response) {
 // creates a button and adds to the top 
 // ****************************
 function create_button (button_name) {
-	var new_button = $('<button type="button" class="btn btn-success btn-md button_style"' + 
+	var new_button = $('<button type="button" class="btn btn-primary btn-md button_style"' + 
 					   'value=' + button_name + '>').text(button_name.replace(/[+]+/g, " "));
 	$("#button_div").append(new_button);
 }
