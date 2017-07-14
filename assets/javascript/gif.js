@@ -1,5 +1,3 @@
-console.log("im rdy");
-
 
 // initial button array
 var sports_arr = ["crossfit", "speedwalking", "soccer", "basketball", "softball", "baseball", "pool", "poker", 
@@ -21,7 +19,9 @@ $(document).ready( function() {
 
 // ****************************
 // when a button is clicked it populates div
-// with the images requested
+// with the images requested by clearing the screen first
+// then setting the image-object array empty and then 
+// running the querry.
 // ****************************
 $("#button_div").on("click", ".button_style", function() {
 
@@ -41,20 +41,37 @@ $("#button_div").on("click", ".button_style", function() {
     });
 });
 
+// ****************************
+// keeps track of the submit button 
+// ****************************
+$("#submit-btn").on("click", function(event) {
+	event.preventDefault(); 		// this function is supposed to prevent the reload of the page
+									// it works on click but not when u hit enter so i used on the form
+									// onkeypress="return event.keyCode != 13"
+
+	add_button_from_input();
+
+});
+
 
 // ****************************
-// when an image is clicled it changes its src
-// to animate the gif or to stop the gif
+// when an image is clicked it checks if it needs to be animated
+// by checking its corresponding object stored in the array.
+// this is done by storing its value on the attribute 'index-number'
 // ****************************
 $("#images_div").on("click", ".img", function(){
-	console.log("i was clicked: " + this.alt);
-	var index = parseInt(this.alt)
+	// gets index number from image tag
+	var index = parseInt($(this).attr("index-number"));
+	console.log("i was clicked: " + index);
+	
+
+	// using index it checks on the array if needs to be animated
 	if (images_arr[index].flag) 
 		this.src = images_arr[index].gif_url;
 	else 
-		this.src = images_arr[index].still_img;
-	
+		this.src = images_arr[index].still_img;	
 
+	// changes the object flag attribute to the oposite
 	images_arr[index].flag = !images_arr[index].flag;
 
 });
@@ -66,14 +83,13 @@ $("#images_div").on("click", ".img", function(){
 // respective image and rating
 // ****************************
 function display_images(json_response) {
+
 	console.log(json_response);
-	var gif_url;
-	var rating;
-	var still_img;
-	var height;
-	var width;
 	var image_obj = {};
 
+	// creates the images objects and stores in an array to access later
+	// it has the gif-url, still image url, rating, width, heigh and a flag
+	// used to animate or stop animation of a gif 
 	for (var i = 0; i < json_response.data.length; i++) {
 		
 		image_obj.gif_url = json_response.data[i].images.fixed_height.url;
@@ -84,21 +100,29 @@ function display_images(json_response) {
 		image_obj.flag = true;
 		
 
-		// push to imaes array to use later when clicling on images 
+		// push to images array to use later when clicling on images 
 		images_arr.push(image_obj);
 		// empty the object in order to create a new one, tho i dont know if is necessary
 		image_obj = {};
 	}
 
+	/* im aware that we can do the next loop in same loop above but in order to be more redable 
+	   i decided to break it into 2 */
+
 	var outter_div;
 	var rating_div;
 	var image_div;
+	var image_string;
 
+	// uses the array created above and makes the images divs with its respective rating
 	for (var i = 0; i < images_arr.length; i++) {
 		
 		outter_div = $("<div class='image_class' style='float:left;' >  " );
 		rating_div = $("<p>").text("Rating: " + images_arr[i].rating);
-		image_div = $('<img alt="'+i+'" class="img-thumbnail img" src=' + images_arr[i].still_img + ' style="width:' + images_arr[i].width + 'px;height:' + images_arr[i].height +'px;" >');
+		image_string = '<img class="img-thumbnail img" src=' + images_arr[i].still_img + 
+					   ' style="width:' + images_arr[i].width + 'px;' +
+					   'height:' + images_arr[i].height + 'px;" >';
+		image_div = $(image_string).attr("index-number" , i);
 
 		outter_div.append(rating_div);
 		outter_div.append(image_div);
@@ -112,40 +136,52 @@ function display_images(json_response) {
 // creates a button and adds to the top 
 // ****************************
 function create_button (button_name) {
-	var new_button = $('<button type="button" class="btn btn-success btn-md button_style" value=' + button_name + '>').text(button_name.replace(/[+]+/g, " "));
+	var new_button = $('<button type="button" class="btn btn-success btn-md button_style"' + 
+					   'value=' + button_name + '>').text(button_name.replace(/[+]+/g, " "));
 	$("#button_div").append(new_button);
 }
 
 // ****************************
 // grabs input from text form
 // removes trailing white space and 
-// modifies teh string to send the requests
+// modifies the string to send the requests
 // then checks if requests is good or not
 // ****************************
 function add_button_from_input() {
 	console.log("checking if button already exits");
+	// grabs input and removes trailing white space
 	var input_from_user = $.trim($("#input_div #add_a_button").val() );
+	// replaces in between white space with + 
 	input_from_user = input_from_user.replace(/[ ]+/g, "+").toLowerCase();
 
 
-	var queryURL = "https://api.giphy.com/v1/gifs/search?q= " + input_from_user + "&api_key=dc6zaTOxFJmzC&limit=10";
+	var queryURL = "https://api.giphy.com/v1/gifs/search?q= " + input_from_user + 
+					"&api_key=dc6zaTOxFJmzC&limit=10";
 
 	$.ajax({
     	url: queryURL,
     	method: 'GET'
     }).done(function(response) {
     	console.log(response);
-
+    	// checks if response is good
     	if (response.meta.status !== 200) {	
 			alert ("not valid input, with status: " + response.meta.msg);
-		} else if (response.data.length === 0) {
+		} 
+		// if response is good but returns nothing then show alert 
+		// otherwise user wont see anything happening 
+		else if (response.data.length === 0) {
 			alert ("No match found");
 
-		}else if (sports_arr.indexOf(input_from_user) !== -1 ){
+		}
+		// if the button already exists then alert user
+		else if (sports_arr.indexOf(input_from_user) !== -1 ){
 			alert ("it Already exits in the array or");
-		} else  {
+		} 
+		// create button and clear input text
+		else  {
 			sports_arr.push(input_from_user);
 			create_button(input_from_user);
+			$("#input_div #add_a_button").val('');
 			console.log(input_from_user + " added to array and screen");
 		} 
  
