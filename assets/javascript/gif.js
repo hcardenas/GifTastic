@@ -46,13 +46,13 @@ $("#button_div").on("click", ".button_style", function() {
 // ****************************
 // keeps track of the submit button 
 // ****************************
-$("#submit-btn").on("click", function(event) {
+$("#submit-form").on("submit", function(event) {
 	// this function is supposed to prevent the reload of the page
 	// it works on click but not when u hit enter so i used on the form
 	// onkeypress="return event.keyCode != 13"
 	event.preventDefault(); 		
 	add_button_from_input();
-
+	return false;
 });
 
 
